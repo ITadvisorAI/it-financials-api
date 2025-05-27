@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  title: IT Financials GPT API
+  version: 1.0.0
+  description: |
+    Receives all required files from the roadmap and prior GPT modules to generate
+    a detailed IT financial analysis report including costs, ROI, risk exposure,
+    and executive dashboards. Outputs Excel, PPTX, and optional DOCX for decision-makers.
+
+servers:
+  - url: https://it-financials-api.onrender.com
+
+paths:
+  /start_it_financials:
+    post:
+      summary: Start IT Financials analysis
+      operationId: startITFinancials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+                - email
+                - files
+              properties:
+                session_id:
+                  type: string
+                  description: Unique ID for this transformation session
+                email:
+                  type: string
+                  description: Email of the user initiating the request
+                gpt_module:
+                  type: string
+                  enum: [it_financials]
+                  description: Identifies the current GPT module
+                status:
+                  type: string
+                  enum: [complete]
+                  description: Status flag for execution
+                files:
+                  type: array
+                  description: List of all uploaded input files
+                  items:
+                    type: object
+                    required:
+                      - file_name
+                      - file_url
+                      - file_type
+                    properties:
+                      file_name:
+                        type: string
+                        description: Name of the uploaded file
+                      file_url:
+                        type: string
+                        description: Publicly accessible URL to download the file
+                      file_type:
+                        type: string
+                        description: Type of input file (e.g., gap_hw, roadmap_docx, strategy_docx)
+      responses:
+        "200":
+          description: Successfully started IT Financials processing
+        "400":
+          description: Missing or invalid request fields
+        "500":
+          description: Internal server error while starting financial analysis
